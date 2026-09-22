@@ -1,61 +1,61 @@
 # ClawAgent
 
-个人自托管 AI 助手面板：通过 Telegram 跟自己的 Claude Code 对话，并让它监控你在乎的东西——行情价格、Reddit、Twitter、人物动态、网络信息——有情况就推送提醒。
+A self-hosted AI assistant dashboard: chat with your own Claude Code over Telegram, and have it watch the things you care about — market prices, Reddit, Twitter, people, web intel — pinging you when something happens.
 
-> **来源说明**：本仓库基于 [Gideon AI](https://github.com/terryds/gideon-ai)（MIT License，Copyright (c) 2026 Terry Djony），按架构模块拆成多个 PR 逐步引入。LICENSE 文件完整保留。
+> **Attribution**: This repository is based on [Gideon AI](https://github.com/terryds/gideon-ai) (MIT License, Copyright (c) 2026 Terry Djony), introduced module by module across multiple PRs. The LICENSE file is kept intact.
 
-## 架构
+## Architecture
 
 ```
                     ┌────────────────────┐
-   你 ── Telegram ──┤  ClawAgent 面板     ├── Claude Code（你自己的）
+  You ── Telegram ──┤  ClawAgent panel    ├── Claude Code (yours)
                     │                    │
-                    │  • 行情信号         │── Binance、Yahoo Finance
-                    │  • Reddit 追踪      │── reddit.com（经代理）
-                    │  • Twitter 追踪     │── twitter-cli
-                    │  • Exa 人物搜索     │── Exa API
-                    │  • 信息信号         │── Perplexity
+                    │  • Market signals   │── Binance, Yahoo Finance
+                    │  • Reddit tracking  │── reddit.com (via proxy)
+                    │  • Twitter tracking │── twitter-cli
+                    │  • Exa people search│── Exa API
+                    │  • Info signals     │── Perplexity
                     └────────────────────┘
 ```
 
-全部跑在你自己的机器上：SQLite 存数据，Bun + React 单进程。无账号、无 SaaS。
+Runs entirely on your own machine: SQLite for storage, Bun + React in a single process. No accounts, no SaaS.
 
-> 单用户设计：在 VPS 上给一个人用。关联的 Telegram 聊天实际上拥有 shell 权限（见原项目的 Security notes），不要多用户共用。
+> Single-user design: meant for one person on a VPS. The linked Telegram chat effectively has shell access (see the original project's Security notes), so don't share it with other users.
 
-## 模块与 PR
+## Modules & PRs
 
-| PR | 模块 | 内容 |
-|----|------|------|
-| #1 | 项目脚手架 | 构建配置、依赖、环境模板 |
-| #2 | 数据持久层 | `server/db.ts` SQLite 表结构与读写 |
-| #3 | Telegram 中继 | Bot 收发、消息监听、Claude Code 调用 |
-| #4 | 行情信号 | 交易对、行情抓取、轮询告警 |
-| #5 | Reddit 追踪 | 关键词监控 |
-| #6 | Twitter 追踪 | 关键词监控 |
-| #7 | Exa + 信息信号 | 人物搜索、Perplexity 定时摘要 |
-| #8 | API 服务 | `server/index.ts` 聚合接口 |
-| #9 | 前端面板 | React 监控界面 |
+| PR | Module | Contents |
+|----|--------|----------|
+| #1 | Project scaffolding | Build config, dependencies, env template |
+| #2 | Persistence layer | `server/db.ts` SQLite schema and read/write helpers |
+| #3 | Telegram relay | Bot send/receive, message listening, Claude Code invocation |
+| #4 | Market signals | Trading pairs, price fetching, polling alerts |
+| #5 | Reddit tracker | Keyword monitoring |
+| #6 | Twitter tracker | Keyword monitoring |
+| #7 | Exa + info signals | People search, scheduled Perplexity digests |
+| #8 | API server | `server/index.ts` aggregate endpoints |
+| #9 | Frontend dashboard | React monitoring UI |
 
-## 快速开始
+## Quick start
 
-### 依赖
+### Requirements
 
 - Bun ≥ 1.3.12
-- Claude Code CLI（`npm install -g @anthropic-ai/claude-code`，登录一次）
-- Telegram Bot Token（找 [@BotFather](https://t.me/BotFather) 免费申请）
+- Claude Code CLI (`npm install -g @anthropic-ai/claude-code`, log in once)
+- Telegram Bot Token (get one free from [@BotFather](https://t.me/BotFather))
 
-### 安装运行
+### Install & run
 
 ```bash
-cp .env.example .env   # 填入配置
+cp .env.example .env   # fill in your config
 bun install
-bun run dev            # 开发模式
-# 或
+bun run dev            # dev mode
+# or
 bun run build && bun start
 ```
 
-打开浏览器访问 `http://localhost:3000`，按两步向导完成配置。
+Open `http://localhost:3000` in your browser and follow the two-step setup wizard.
 
 ## License
 
-MIT — 见 [LICENSE](./LICENSE)。原作者：Terry Djony（Gideon AI）。
+MIT — see [LICENSE](./LICENSE). Original author: Terry Djony (Gideon AI).
